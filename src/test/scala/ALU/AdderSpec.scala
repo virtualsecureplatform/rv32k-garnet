@@ -11,8 +11,8 @@ class AdderSpec extends ChiselFlatSpec {
       c =>
         new PeekPokeTester(c) {
           for (i <- 0 until 100) {
-            val in_a = Random.nextInt(32)
-            val in_b = Random.nextInt(32)
+            val in_a = Random.nextInt()
+            val in_b = Random.nextInt()
             poke(c.io.in_a, in_a)
             poke(c.io.in_b, in_b)
             expect(c.io.out, in_a + in_b)
