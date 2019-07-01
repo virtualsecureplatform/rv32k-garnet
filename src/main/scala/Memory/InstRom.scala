@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 
 class InstRomPort extends Bundle {
-  val readAddress = Input(UInt(8.W))
+  val readAddress = Input(UInt(4.W))
 
   val out = Output(UInt(32.W))
 
