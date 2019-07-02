@@ -1,7 +1,6 @@
 package ALU
 
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
-
 import scala.util.Random
 
 
