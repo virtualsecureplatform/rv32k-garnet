@@ -24,6 +24,7 @@ class MemoryWriteSpec extends ChiselFlatSpec {
       c =>
         new PeekPokeTester(c) {
         }
+    })
+    true
     }
-    )}
 }

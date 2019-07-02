@@ -15,9 +15,10 @@ limitations under the License.
 */
 
 import ALU.Adder
+import Decoder.MemoryRead
 import Memory.{DataRam, InstRom}
 import chisel3.iotesters.Driver
 
 object Main extends App {
-  chisel3.Driver.execute(args, ()=>new DataRam())
+  chisel3.Driver.execute(args, ()=>new MemoryRead())
 }

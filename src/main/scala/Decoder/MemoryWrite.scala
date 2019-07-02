@@ -16,7 +16,9 @@ limitations under the License.
 
 package Decoder
 
+import Config.Instructions
 import chisel3._
+import chisel3.util.Cat
 
 class MemoryWritePort extends Bundle {
   val inst = Input(UInt(16.W))
@@ -27,22 +29,16 @@ class MemoryWritePort extends Bundle {
 class MemoryWrite extends Module{
   val io = IO(new MemoryWritePort)
 
-  io.addressOffset(1,0) := 0x0.U(2.W)
-
-  when(io.inst(15, 13) === 0x6.U(3.W) && io.inst(1,0) === 0x2.U(2.W)) {
+  when(io.inst === Instructions.SWSP) {
     //SWSP
     io.memoryWrite := true.B
-    io.addressOffset(7, 6) := io.inst(8, 7)
-    io.addressOffset(5, 2) := io.inst(12, 9)
-  }.elsewhen(io.inst(15, 13) === 0x6.U(3.W) && io.inst(1,0) === 0x0.U(2.W)) {
+    io.addressOffset := Cat(io.inst(8,7), io.inst(12, 9), 0x0.U(2.W))
+  }.elsewhen(io.inst === Instructions.SW) {
     //SW
     io.memoryWrite := true.B
-    io.addressOffset(7) := 0x0.U(1.W)
-    io.addressOffset(6) := io.inst(5)
-    io.addressOffset(5, 3) := io.inst(12, 10)
-    io.addressOffset(2) := io.inst(6)
+    io.addressOffset := Cat(0x0.U(1.W), io.inst(5), io.inst(12,10), io.inst(6), 0x0.U(2.W))
   }.otherwise{
     io.memoryWrite := false.B
-    io.addressOffset(7,2) := 0x0.U(6.W)
+    io.addressOffset := 0x0.U(8.W)
   }
 }
