@@ -17,33 +17,32 @@ limitations under the License.
 package Decoder
 
 import chisel3._
-import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
-class MemoryReadPort extends Bundle {
+
+class MemoryWritePort extends Bundle {
   val inst = Input(UInt(16.W))
-  val memoryRead = Output(Bool())
+  val memoryWrite = Output(Bool())
   val addressOffset = Output(UInt(8.W))
 }
 
-class MemoryRead extends Module {
-  val io = IO(new MemoryReadPort)
+class MemoryWrite extends Module{
+  val io = IO(new MemoryWritePort)
 
   io.addressOffset(1,0) := 0x0.U(2.W)
 
-  when(io.inst(15, 13) === 0x2.U(3.W) && io.inst(1,0) === 0x2.U(2.W)) {
-    //LWSP
-    io.memoryRead := true.B
-    io.addressOffset(7, 6) := io.inst(3, 2)
-    io.addressOffset(5) := io.inst(12)
-    io.addressOffset(4, 2) := io.inst(6, 4)
-  }.elsewhen(io.inst(15, 13) === 0x2.U(3.W) && io.inst(1,0) === 0x0.U(2.W)) {
-    //LW
-    io.memoryRead := true.B
+  when(io.inst(15, 13) === 0x6.U(3.W) && io.inst(1,0) === 0x2.U(2.W)) {
+    //SWSP
+    io.memoryWrite := true.B
+    io.addressOffset(7, 6) := io.inst(8, 7)
+    io.addressOffset(5, 2) := io.inst(12, 9)
+  }.elsewhen(io.inst(15, 13) === 0x6.U(3.W) && io.inst(1,0) === 0x0.U(2.W)) {
+    //SW
+    io.memoryWrite := true.B
     io.addressOffset(7) := 0x0.U(1.W)
     io.addressOffset(6) := io.inst(5)
     io.addressOffset(5, 3) := io.inst(12, 10)
     io.addressOffset(2) := io.inst(6)
   }.otherwise{
-    io.memoryRead := false.B
+    io.memoryWrite := false.B
     io.addressOffset(7,2) := 0x0.U(6.W)
   }
 }

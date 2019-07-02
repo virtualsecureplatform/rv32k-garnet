@@ -16,12 +16,11 @@ limitations under the License.
 
 package Decoder
 
-import chisel3._
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
 
-class MemoryReadSpec extends ChiselFlatSpec {
+class MemoryWriteSpec extends ChiselFlatSpec {
   "Distortion" should "parametric full test" in {
-    assert(Driver(() => new MemoryRead) {
+    assert(Driver(() => new MemoryWrite) {
       c =>
         new PeekPokeTester(c) {
         }
