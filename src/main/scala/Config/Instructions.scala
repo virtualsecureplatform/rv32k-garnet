@@ -41,5 +41,21 @@ object Instructions {
   def SUB    = BitPat("b100011???00???01")
 
   def NOP = BitPat.bitPatToUInt(BitPat("b0000000000000001"))
+
+  def isLWSP(inst:Long): Boolean = {
+    (((inst>>>13)&0x7) == 0x2) && ((inst&0x3) == 0x2)
+  }
+
+  def immLWSP(inst:Long): Long = {
+    (((inst>>>12)&0x1)<<5)+(((inst>>>4)&0x7)<<2)+(((inst>>>2)&0x3)<<6)
+  }
+
+  def isLW(inst:Long): Boolean = {
+    (((inst>>>13)&0x7) == 0x2) && ((inst&0x3) == 0x0)
+  }
+
+  def immLW(inst:Long): Long = {
+    (((inst>>>5)&0x1)<<6)+(((inst>>>10)&0x7)<<3)+(((inst>>>6)&0x1)<<2)
+  }
 }
 

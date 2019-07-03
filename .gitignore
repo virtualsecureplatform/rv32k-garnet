@@ -9,3 +9,5 @@ utils
 *.anno
 *.fir
 *.v
+.attach*
+.~lock*

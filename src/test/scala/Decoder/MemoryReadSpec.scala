@@ -16,14 +16,39 @@ limitations under the License.
 
 package Decoder
 
+import Config.Instructions
 import chisel3._
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
 
+import scala.io.Source
+
 class MemoryReadSpec extends ChiselFlatSpec {
+  val source = Source.fromFile("src/test/binary/Decoder/MemoryRead.bin")
+  val lines = source.getLines
+
+
   "Distortion" should "parametric full test" in {
     assert(Driver(() => new MemoryRead) {
       c =>
         new PeekPokeTester(c) {
+          lines.foreach{ s =>
+            val inst = Integer.parseUnsignedInt(s.split(" ", 0)(1), 16).toLong
+            val instUInt = inst.asUInt(16.W)
+            poke(c.io.inst, instUInt)
+            if(Instructions.isLWSP(inst)){
+              println("LWSP")
+              expect(c.io.addressOffset, Instructions.immLWSP(inst).asUInt(16.W))
+              expect(c.io.memoryRead, true)
+            }else if(Instructions.isLW(inst)){
+              println("LW")
+              expect(c.io.addressOffset, Instructions.immLW(inst).asUInt(16.W))
+              expect(c.io.memoryRead, true)
+            }else{
+              println("Others")
+              expect(c.io.addressOffset, 0.U)
+              expect(c.io.memoryRead, false)
+            }
+          }
         }
     })
     true
