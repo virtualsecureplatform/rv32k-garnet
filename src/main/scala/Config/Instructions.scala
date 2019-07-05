@@ -65,5 +65,12 @@ object Instructions {
 
   def immSW(inst:Long): Long =
     (((inst>>>5)&0x1)<<6)+(((inst>>>10)&0x7)<<3)+(((inst>>>6)&0x1)<<2)
+
+  def isLI(inst:Long): Boolean =
+    (((inst>>13)&0x7) == 0x2) && ((inst&0x3) == 0x1)
+
+  def immLI(inst:Long): Long =
+    (((inst>>12)&0x1)<<5)+((inst>>2)&0x1F)
+
 }
 
