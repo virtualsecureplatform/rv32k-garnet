@@ -17,21 +17,21 @@ limitations under the License.
 package Memory
 
 import chisel3._
-import chisel3.util._
 
-class InstRomPort extends Bundle {
-  val readAddress = Input(UInt(4.W))
-
-  val out = Output(UInt(16.W))
-
+class PCPort extends Bundle {
+  val jumpAddress = Input(UInt(32.W))
+  val jump = Input(Bool())
+  val pcOut = Output(UInt(32.W))
 }
-class InstRom extends Module{
-  val io = IO(new InstRomPort);
 
-  def romData()={
-    val times = (0 until 16).map(i => i.asUInt(16.W))
-    VecInit(times)
+class PC extends Module{
+  val io = IO(new PCPort)
+  val RegPC = RegInit(0.U(32.W))
+  when(io.jump === false.B){
+    RegPC := RegPC+1.U(32.W)
+  }.otherwise{
+    RegPC := io.jumpAddress
   }
 
-  io.out := romData()(io.readAddress)
+  io.pcOut := RegPC
 }

@@ -14,24 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package Memory
+package Stage
 
 import chisel3._
-import chisel3.util._
 
-class InstRomPort extends Bundle {
-  val readAddress = Input(UInt(4.W))
-
-  val out = Output(UInt(16.W))
-
+class IdPort extends Bundle {
 }
-class InstRom extends Module{
-  val io = IO(new InstRomPort);
 
-  def romData()={
-    val times = (0 until 16).map(i => i.asUInt(16.W))
-    VecInit(times)
-  }
-
-  io.out := romData()(io.readAddress)
+class Id extends Module{
+  val io = IO(new IdPort)
 }
