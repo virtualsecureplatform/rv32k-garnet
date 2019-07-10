@@ -45,29 +45,89 @@ object Instructions {
   def isLWSP(inst:Long): Boolean =
     (((inst>>>13)&0x7) == 0x2) && ((inst&0x3) == 0x2)
 
-  def immLWSP(inst:Long): Long =
-    (((inst>>>12)&0x1)<<5)+(((inst>>>4)&0x7)<<2)+(((inst>>>2)&0x3)<<6)
-
   def isSWSP(inst:Long): Boolean =
     (((inst>>>13)&0x7) == 0x6) && ((inst&0x3) == 0x2)
-
-  def immSWSP(inst:Long): Long =
-    (((inst>>>7)&0x3)<<6)+(((inst>>>9)&0xF)<< 2)
 
   def isLW(inst:Long): Boolean =
     (((inst>>>13)&0x7) == 0x2) && ((inst&0x3) == 0x0)
 
-  def immLW(inst:Long): Long =
-    (((inst>>>5)&0x1)<<6)+(((inst>>>10)&0x7)<<3)+(((inst>>>6)&0x1)<<2)
-
   def isSW(inst:Long): Boolean =
     (((inst>>>13)&0x7) == 0x6) && ((inst&0x3) == 0x0)
 
-  def immSW(inst:Long): Long =
-    (((inst>>>5)&0x1)<<6)+(((inst>>>10)&0x7)<<3)+(((inst>>>6)&0x1)<<2)
+  def isJ(inst:Long): Boolean =
+    (((inst>>13)&0x7) == 0x5) && ((inst&0x3) == 0x1)
+
+  def isJAL(inst:Long): Boolean =
+    (((inst>>13)&0x7) == 0x1) && ((inst&0x3) == 0x1)
+
+  def isJR(inst:Long): Boolean =
+    (((inst>>12)&0xF) == 0x8) && ((inst&0x7F) == 0x2)
+
+  def isJALR(inst:Long): Boolean =
+    (((inst>>12)&0xF) == 0x9) && ((inst&0x7F) == 0x2)
+
+  def isBEQZ(inst:Long): Boolean =
+    (((inst>>13)&0x7) == 0x6) && ((inst&0x3) == 0x2)
+
+  def isBNEZ(inst:Long): Boolean =
+    (((inst>>13)&0x7) == 0x7) && ((inst&0x3) == 0x2)
 
   def isLI(inst:Long): Boolean =
     (((inst>>13)&0x7) == 0x2) && ((inst&0x3) == 0x1)
+
+  def isMV(inst:Long): Boolean =
+    (((inst>>12)&0xF) == 0x8) && ((inst&0x3) == 0x2)
+
+  def isADD(inst:Long): Boolean =
+    (((inst>>12)&0xF) == 0x9) && ((inst&0x3) == 0x2)
+
+  def isSUB(inst:Long): Boolean =
+    (((inst>>10)&0x3F) == 0x23) && (((inst>>5)&0x3) == 0x0) && ((inst&0x3) == 0x1)
+
+  def isNOP(inst:Long): Boolean =
+    (inst&0xFF) == 0x1
+
+  def regLWSP(inst:Long): (Int,Int,Int) = (((inst>>7)&0x1F).toInt, 0x2, 0)
+
+  def regSWSP(inst:Long): (Int,Int,Int) = (((inst>>2)&0x1F).toInt, 0x2, 0)
+
+  def regLW(inst:Long): (Int,Int,Int) = (((inst>>2)&0x7).toInt+8, ((inst>>7)&0x7).toInt+8, 0)
+
+  def regSW(inst:Long): (Int,Int,Int) = (((inst>>2)&0x7).toInt+8, ((inst>>7)&0x7).toInt+8, 0)
+
+  def regJ(inst:Long): (Int,Int,Int) = (0x0, 0, 0)
+
+  def regJAL(inst:Long): (Int,Int,Int) = (0x1, 0, 0)
+
+  def regJR(inst:Long): (Int,Int,Int) = (0x0, ((inst>>7)&0x1F).toInt, 0)
+
+  def regJALR(inst:Long): (Int,Int,Int) = (0x1, ((inst>>7)&0x1F).toInt, 0)
+
+  def regBEQZ(inst:Long): (Int,Int,Int) = (0, ((inst>>7)&0x7).toInt+8, 0x0)
+
+  def regBNEZ(inst:Long): (Int,Int,Int) = (0, ((inst>>7)&0x7).toInt+8, 0x0)
+
+  def regLI(inst:Long): (Int,Int,Int) = (((inst>>7)&0x1F).toInt, 0x0, 0)
+
+  def regMV(inst:Long): (Int,Int,Int) = (((inst>>7)&0x1F).toInt, 0x0, ((inst>>2)&0x1F).toInt)
+
+  def regADD(inst:Long): (Int,Int,Int) = (((inst>>7)&0x1F).toInt, ((inst>>7)&0x1F).toInt, ((inst>>2)&0x1F).toInt)
+
+  def regSUB(inst:Long): (Int,Int,Int) = (((inst>>7)&0x7).toInt+8, ((inst>>7)&0x7).toInt+8, ((inst>>2)&0x7).toInt+8)
+
+  def regNOP(inst:Long): (Int,Int,Int) = (0, 0, 0)
+
+  def immLWSP(inst:Long): Long =
+    (((inst>>>12)&0x1)<<5)+(((inst>>>4)&0x7)<<2)+(((inst>>>2)&0x3)<<6)
+
+  def immSWSP(inst:Long): Long =
+    (((inst>>>7)&0x3)<<6)+(((inst>>>9)&0xF)<< 2)
+
+  def immLW(inst:Long): Long =
+    (((inst>>>5)&0x1)<<6)+(((inst>>>10)&0x7)<<3)+(((inst>>>6)&0x1)<<2)
+
+  def immSW(inst:Long): Long =
+    (((inst>>>5)&0x1)<<6)+(((inst>>>10)&0x7)<<3)+(((inst>>>6)&0x1)<<2)
 
   def immLI(inst:Long): Long =
     (((inst>>12)&0x1)<<5)+((inst>>2)&0x1F)
