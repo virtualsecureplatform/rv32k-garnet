@@ -17,6 +17,7 @@ limitations under the License.
 package ALU
 
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
+import chisel3._
 import scala.util.Random
 
 
@@ -26,11 +27,20 @@ class AdderSpec extends ChiselFlatSpec {
       c =>
         new PeekPokeTester(c) {
           for (i <- 0 until 100) {
-            val in_a = Random.nextInt()
-            val in_b = Random.nextInt()
-            poke(c.io.in_a, in_a)
-            poke(c.io.in_b, in_b)
-            expect(c.io.out, in_a+in_b)
+            val a = Random.nextInt()
+            val b = Random.nextInt()
+            poke(c.io.sel, 0.U)
+            poke(c.io.in_a, a.asSInt(32.W))
+            poke(c.io.in_b, b.asSInt(32.W))
+            expect(c.io.out, (a + b).asSInt(32.W))
+          }
+          for (i <- 0 until 100) {
+            val a = Random.nextInt()
+            val b = Random.nextInt()
+            poke(c.io.sel, 1.U)
+            poke(c.io.in_a, a.asSInt(32.W))
+            poke(c.io.in_b, b.asSInt(32.W))
+            expect(c.io.out, (a - b).asSInt(32.W))
           }
         }
     })
