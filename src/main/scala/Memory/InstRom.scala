@@ -29,7 +29,8 @@ class InstRom extends Module{
   val io = IO(new InstRomPort);
 
   def romData()={
-    val times = (0 until 16).map(i => i.asUInt(16.W))
+    val rawInst = Array (0x44A9, 0x8426)
+    val times = (0 until 16).map(i => rawInst(i%(rawInst.size)).asUInt(16.W))
     VecInit(times)
   }
 

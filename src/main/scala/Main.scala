@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import ALU.Adder
 import Decoder.{Imm, MemoryRead}
 import Memory.{DataRam, InstRom}
 import chisel3.iotesters.Driver
 
 object Main extends App {
-  chisel3.Driver.execute(args, ()=>new Imm())
+  chisel3.Driver.execute(args, ()=>new CpuTop())
 }

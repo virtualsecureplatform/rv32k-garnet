@@ -19,8 +19,11 @@ package Stage
 import chisel3._
 
 class MemPort extends Bundle {
+  val in = Input(UInt(32.W))
+  val out = Output(UInt(32.W))
 }
 
 class Mem extends Module{
   val io = IO(new MemPort)
+  io.out := io.in
 }

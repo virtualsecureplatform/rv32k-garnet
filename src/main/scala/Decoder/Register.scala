@@ -22,10 +22,14 @@ class Register extends Module {
     io.rd := io.inst(6, 2)
     io.rs1 := 0x2.U(5.W)
     io.rs2 := DontCare
-  }.elsewhen(io.inst === Instructions.LW || io.inst === Instructions.SW) {
+  }.elsewhen(io.inst === Instructions.LW) {
     io.rd := Cat(1.U(2.W), io.inst(4, 2))
     io.rs1 := Cat(1.U(2.W), io.inst(9, 7))
     io.rs2 := DontCare
+  }.elsewhen(io.inst === Instructions.SW) {
+    io.rd := DontCare
+    io.rs1 := Cat(1.U(2.W), io.inst(9, 7))
+    io.rs2 := Cat(1.U(2.W), io.inst(4, 2))
   }.elsewhen(io.inst === Instructions.J) {
     io.rd := 0.U(5.W)
     io.rs1 := DontCare

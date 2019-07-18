@@ -19,8 +19,11 @@ package Stage
 import chisel3._
 
 class WbPort extends Bundle {
+  val in = Input(UInt(32.W))
+  val out = Output(UInt(32.W))
 }
 
 class Wb extends Module{
   val io = IO(new WbPort)
+  io.out := io.in
 }

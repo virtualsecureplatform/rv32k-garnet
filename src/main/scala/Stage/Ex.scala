@@ -19,8 +19,40 @@ package Stage
 import chisel3._
 
 class ExPort extends Bundle {
+  val rs1Data = Input(UInt(32.W))
+  val rs2Data = Input(UInt(32.W))
+  val immData = Input(SInt(32.W))
+  val selImm = Input(Bool())
+  val opcodeALU = Input(UInt(1.W))
+
+  val memReadIn = Input(Bool())
+  val memWriteIn = Input(Bool())
+  val memWriteDataIn = Input(UInt(32.W))
+
+  val memReadOut = Output(Bool())
+  val memWriteOut = Output(Bool())
+  val memWriteDataOut = Output(UInt(32.W))
+
+  val out = Output(UInt(32.W))
 }
+
 
 class Ex extends Module{
   val io = IO(new ExPort)
+
+  val alu = Module(new ALU.Adder)
+
+  alu.io.in_a := io.rs1Data.asSInt()
+  alu.io.sel := io.opcodeALU
+  io.out := alu.io.out.asUInt()
+
+  when(io.selImm) {
+    alu.io.in_b := io.immData
+  }.otherwise{
+    alu.io.in_b := io.rs2Data.asSInt()
+  }
+
+  io.memReadOut := io.memReadIn
+  io.memWriteOut := io.memWriteIn
+  io.memWriteDataOut := io.memWriteDataIn
 }

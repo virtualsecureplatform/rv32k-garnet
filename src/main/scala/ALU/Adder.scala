@@ -22,7 +22,7 @@ import chisel3.util._
 class AdderPort extends Bundle {
   val in_a = Input(SInt(32.W))
   val in_b = Input(SInt(32.W))
-  val sel = Input(UInt(32.W))
+  val sel = Input(UInt(1.W))
   val out = Output(SInt(32.W))
 }
 
