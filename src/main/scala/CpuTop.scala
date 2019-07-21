@@ -21,6 +21,9 @@ class CpuTopPort extends Bundle {
   val rs2Data = Output(UInt(32.W))
   val ImmData = Output(SInt(32.W))
 
+  val romAddress = Output(UInt(4.W))
+  val romInst = Input(UInt(16.W))
+
   val debugPort = Output(UInt(32.W))
 }
 
@@ -46,7 +49,7 @@ class CpuTop extends Module{
   memStage.clock := st.io.clockMEM.asClock()
   wbStage.clock := st.io.clockWB.asClock()
 
-  idStage.io.inst := ifStage.io.instOut
+  idStage.io.inst := io.romInst
   exStage.io.rs1Data := idStage.io.rs1Data
   exStage.io.rs2Data := idStage.io.rs2Data
   exStage.io.immData := idStage.io.immData
@@ -57,6 +60,7 @@ class CpuTop extends Module{
   wbStage.io.in := memStage.io.out
   idStage.io.regWriteData := wbStage.io.out
 
+  io.romAddress := ifStage.io.romAddress
   io.rs1Data := idStage.io.rs1Data
   io.rs2Data := idStage.io.rs2Data
   io.ImmData := idStage.io.immData

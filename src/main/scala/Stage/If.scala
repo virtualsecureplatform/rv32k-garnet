@@ -22,19 +22,17 @@ class IfPort extends Bundle {
   val jumpAddress = Input(UInt(32.W))
   val jump = Input(Bool())
 
-  val instOut = Output(UInt(16.W))
+  val romAddress = Output(UInt(4.W))
 }
 
 class If extends Module{
   val io = IO(new IfPort)
 
-  val instRom = Module(new Memory.InstRom)
   val pc = Module(new Memory.PC)
 
   pc.io.jumpAddress := io.jumpAddress
   pc.io.jump := io.jump
 
-  instRom.io.readAddress := pc.io.pcOut(3, 0)
+  io.romAddress := pc.io.pcOut(3, 0)
 
-  io.instOut := instRom.io.out
 }

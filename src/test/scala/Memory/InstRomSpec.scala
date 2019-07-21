@@ -35,5 +35,4 @@ class InstRomSpec extends ChiselFlatSpec {
     })
     true
   }
-
 }

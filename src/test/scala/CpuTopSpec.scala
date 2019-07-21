@@ -14,14 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import Utils.TestRom
 import chisel3._
+import chisel3.iotesters.{ChiselFlatSpec, PeekPokeTester, Driver}
 
-
-object Main extends App {
-  //chisel3.Driver.execute(args, ()=>new CpuTop())
-  val emu = new Emulator
-  for(i <- 0 until emu.ifRom.length*5) {
-    emu.step
-  }
+class CpuTopSpec extends ChiselFlatSpec{
+"Distortion" should "parametric full test" in {
+  assert(Driver(() => new CpuTop) {
+    c =>
+      new PeekPokeTester(c) {
+        val testRom = new Utils.TestRom
+        for (i <- 0 until testRom.length) {
+          val inst = peek(c.io.romAddress).toInt
+          poke(c.io.romInst, testRom.fetch(inst).asUInt(16.W))
+          step(1)
+        }
+      }
+  })
+  true
+}
 }

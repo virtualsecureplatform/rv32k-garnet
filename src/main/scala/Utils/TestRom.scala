@@ -14,14 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import Utils.TestRom
+package Utils
+
+import scala.io.Source
 import chisel3._
 
+class TestRom {
+  val source = Source.fromFile("src/test/binary/Decoder/MemoryRead.bin")
+  val lines = source.getLines.toList
 
-object Main extends App {
-  //chisel3.Driver.execute(args, ()=>new CpuTop())
-  val emu = new Emulator
-  for(i <- 0 until emu.ifRom.length*5) {
-    emu.step
+  def fetch(addr:Int):Long = {
+    val instStr = lines(addr)
+    val inst = Integer.parseUnsignedInt(instStr.split(" ", 0)(1), 16).toLong
+    return inst
   }
+
+  def length:Int = lines.length
 }
